@@ -1,0 +1,9 @@
+@import './variables.scss';
+@import './fonts.scss';
+
+
+html, body {
+  font-family: 'Lato', sans-serif;
+  font-size: 10px;
+  color: $color--text;
+}

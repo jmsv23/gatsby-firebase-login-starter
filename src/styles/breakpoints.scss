@@ -1,0 +1,18 @@
+$tablet:   768;
+$computer:  992;
+
+
+// Breakpoint mixin.
+@mixin breakpoint($class) {
+  @if $class == tablet {
+    @media (min-width: #{$tablet}px) {
+      @content;
+    }
+  } @else if $class == computer {
+    @media (min-width: #{$computer}px) {
+      @content;
+    }
+  } @else {
+    @warn 'Breakpoint mixin supports: mobile, tablet, small, medium, large, xl, xxl, x3l, x4l';
+  }
+}
