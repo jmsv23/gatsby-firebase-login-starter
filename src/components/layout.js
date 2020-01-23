@@ -41,7 +41,6 @@ const Layout = ({ children }) => {
     setFirebase,
   }
 
-
   useEffect(() => {
     Promise.all([app, auth, database]).then(values => {
       const firebase = getFirebase(values[0])
@@ -70,7 +69,7 @@ const Layout = ({ children }) => {
                   <Header siteTitle={data.site.siteMetadata.title} />
                   <main>{children}</main>
                 </>
-              ) : <Login onSubmit={values => { console.log(values, 'works') }} />
+              ) : <Login onSubmit={formState => { firebase.doSignInWithEmailAndPassword(formState.data.user, formState.data.password) }} />
               }
             </>
           );
