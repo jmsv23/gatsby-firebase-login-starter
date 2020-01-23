@@ -6,7 +6,6 @@ const config = {
   storageBucket: process.env.GATSBY_STORAGE_BUCKET,
   messagingSenderId: process.env.GATSBY_MESSAGING_SENDER_ID,
   appId: process.env.GATSBY_APP_ID,
-  measurementId: process.env.GATSBY_MESASUREMENT_ID,
 }
 
 class Firebase {
@@ -56,31 +55,17 @@ class Firebase {
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-        this.user(authUser.uid)
-          .once('value')
-          .then(snapshot => {
-            const dbUser = snapshot.val();
-
-            // default empty roles
-            if (!dbUser.roles) {
-              dbUser.roles = {};
-            }
-
-            // merge auth and db user
-            authUser = {
-              uid: authUser.uid,
-              email: authUser.email,
-              emailVerified: authUser.emailVerified,
-              providerData: authUser.providerData,
-              ...dbUser,
-            };
-
-            next(authUser);
-          });
+        const authData = {
+          uid: authUser.uid,
+          email: authUser.email,
+          emailVerified: authUser.emailVerified,
+          providerData: authUser.providerData,
+        }
+        next(authData)
       } else {
-        fallback();
+        fallback()
       }
-    });
+    })
 
   // *** User API ***
 
