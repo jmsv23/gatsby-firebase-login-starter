@@ -15,6 +15,7 @@ import getFirebase from '../context/firebase'
 import authPathsCheck from '../helpers/authPathsCheck'
 import Header from "./header"
 import Login from './login'
+import PreLoading from './preloading'
 import "./layout.css"
 
 const Layout = ({ children }) => {
@@ -37,6 +38,8 @@ const Layout = ({ children }) => {
     user,
     firebase,
     setFirebase,
+    loading,
+    setLoading
   }
 
   useEffect(() => {
@@ -60,12 +63,13 @@ const Layout = ({ children }) => {
     })
   }, [])
 
+  if (loading) return <PreLoading />
+
   return (
     <AppContext.Provider value={context}>
       <Location>
         {({ location }) => {
           const access = authPathsCheck(authStatus, location.pathname, user)
-          // if (loading) return <h1>loading</h1>
           return (
             <>
               {access ? (

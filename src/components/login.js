@@ -7,6 +7,7 @@ import { withAppContext } from '../context/AppContext'
 import styles from './login.module.scss'
 
 const onSubmit = (formState, context) => {
+  context.setLoading(true)
   context.firebase.doSignInWithEmailAndPassword(formState.data.user, formState.data.password)
 }
 
