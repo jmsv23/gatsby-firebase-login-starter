@@ -9,9 +9,6 @@ import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 import { Location } from "@reach/router"
-import app from 'firebase/app'
-import auth from 'firebase/auth'
-import database from 'firebase/database'
 
 import AppContext from '../context/AppContext'
 import getFirebase from '../context/firebase'
@@ -31,6 +28,7 @@ const Layout = ({ children }) => {
     }
   `)
 
+  const [loading, setLoading] = useState(true)
   const [firebase, setFirebase] = useState(null)
   const [authStatus, setAuthStatus] = useState(false)
   const [user, setUser] = useState(null)
@@ -42,15 +40,20 @@ const Layout = ({ children }) => {
   }
 
   useEffect(() => {
+    const app = require('firebase/app')
+    const auth = require('firebase/auth')
+    const database = require('firebase/database')
+
     Promise.all([app, auth, database]).then(values => {
       const firebase = getFirebase(values[0])
       setFirebase(firebase)
 
       firebase.onAuthUserListener((userInfo) => {
-        console.log(userInfo)
+        setLoading(false)
         setUser(userInfo)
         setAuthStatus(true)
       }, () => {
+        setLoading(false)
         setUser(null)
         setAuthStatus(false)
       })
@@ -62,6 +65,7 @@ const Layout = ({ children }) => {
       <Location>
         {({ location }) => {
           const access = authPathsCheck(authStatus, location.pathname, user)
+          // if (loading) return <h1>loading</h1>
           return (
             <>
               {access ? (
@@ -69,7 +73,7 @@ const Layout = ({ children }) => {
                   <Header siteTitle={data.site.siteMetadata.title} />
                   <main>{children}</main>
                 </>
-              ) : <Login onSubmit={formState => { firebase.doSignInWithEmailAndPassword(formState.data.user, formState.data.password) }} />
+              ) : <Login />
               }
             </>
           );
